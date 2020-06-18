@@ -92,6 +92,7 @@ response_received (GDBusConnection *bus,
   guint32 response;
   g_autoptr(GVariant) ret = NULL;
 
+  g_warning ("BEFORE");
   g_variant_get (parameters, "(u@a{sv})", &response, &ret);
 
   if (response == 0)
@@ -100,6 +101,7 @@ response_received (GDBusConnection *bus,
     g_task_return_new_error (call->task, G_IO_ERROR, G_IO_ERROR_CANCELLED, "SetWallpaper canceled");
   else
     g_task_return_new_error (call->task, G_IO_ERROR, G_IO_ERROR_FAILED, "SetWallpaper failed");
+  g_warning ("AFTER");
 
   wallpaper_call_free (call);
 }
@@ -228,7 +230,7 @@ set_wallpaper (WallpaperCall *call)
 
       path = g_file_get_path (file);
 
-      fd = g_open (path, O_PATH | O_CLOEXEC);
+      fd = g_open (path, O_CLOEXEC);
       if (fd == -1)
         {
           g_task_return_new_error (call->task, G_IO_ERROR, G_IO_ERROR_FAILED, "Failed to open '%s'", call->uri);
